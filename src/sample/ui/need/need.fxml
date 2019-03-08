@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="sample.ui.need.NeedController">
+    <BorderPane fx:id="borderPane">
+        <center>
+            <TableView fx:id="tableView" prefWidth="1080.0" BorderPane.alignment="TOP_LEFT">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+        </center>
+        <top>
+            <HBox alignment="CENTER" prefWidth="1080.0" spacing="25.0" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </BorderPane.margin>
+                <JFXComboBox fx:id="tableCB" prefHeight="40.0" prefWidth="200.0" promptText="Brand" />
+                <JFXButton styleClass="jfx-button1" onAction="#handleDownload" prefHeight="50.0"
+                           prefWidth="200.0"  text="Downlaod" />
+            </HBox>
+        </top>
+
+    </BorderPane>
+</StackPane>

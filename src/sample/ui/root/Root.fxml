@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:id="root"  xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sample.ui.root.RootController">
+    <top>
+        <BorderPane styleClass="background1" prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER_RIGHT">
+            <left>
+                <ImageView fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../../resources/icons/se.jpeg"/>
+                </ImageView>
+            </left>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+            <center>
+                <Label fx:id="window" textFill="aliceblue" alignment="CENTER" focusTraversable="true" text="View Stock"
+                       textAlignment="CENTER" wrapText="true">
+                    <font>
+                        <Font name="System Bold" size="45.0"/>
+                    </font>
+                </Label>
+            </center>
+            <right>
+                <JFXHamburger fx:id="ham"/>
+            </right>
+        </BorderPane>
+    </top>
+    <bottom>
+        <VBox fx:id="vBox" alignment="CENTER" spacing="75.0">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+            </padding>
+            <VBox spacing="20.0">
+                <JFXButton onAction="#stockIn" text="STOCK IN"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+                <JFXButton onAction="#stockOut" text="STOCK OUT"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+                <JFXButton onAction="#salesReturn" text="SALES RETURN"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+                <JFXButton onAction="#viewStock" text="VIEW STOCKS"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+                <JFXButton onAction="#handleNeedToOrder" text="NEED TO ORDER"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+                <JFXButton onAction="#stockHistory" text="STOCK HISTORY"
+                           styleClass="jfx-button1" prefHeight="42.0" prefWidth="200.0"/>
+                <JFXButton onAction="#importStocks" text="IMPORT STOCKS"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+                <JFXButton onAction="#handleAddNewUser" text="USER PANEL"
+                           styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"
+                           fx:id="addNewUser"/>
+                <JFXButton onAction="#logOut" text="LOG OUT" styleClass="jfx-button1" prefHeight="40.0" prefWidth="200.0"/>
+
+            </VBox>
+        </VBox>
+    </bottom>
+</BorderPane>

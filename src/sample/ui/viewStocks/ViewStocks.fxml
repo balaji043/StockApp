@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ui.viewStocks.ViewStocksController">
+    <BorderPane fx:id="borderPane">
+        <center>
+            <TableView fx:id="tableView" prefWidth="1080.0" BorderPane.alignment="TOP_LEFT">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+        </center>
+        <top>
+             <HBox spacing="50.0">
+                 <JFXComboBox fx:id="tableCB" prefHeight="40.0" prefWidth="170.0" promptText="BRAND" />
+                 <JFXComboBox fx:id="categoryCB" prefHeight="40.0" prefWidth="170.0" promptText="Category" />
+                 <JFXComboBox fx:id="subCategoryCB" prefHeight="40.0" prefWidth="170.0" promptText="Sub-Category" />
+                 <JFXTextField fx:id="searchBox" prefHeight="40.0" prefWidth="170.0" promptText="SEARCH PRODUCT" />
+                 <JFXButton onAction="#handleSearch" prefHeight="40.0" prefWidth="170.0" styleClass="jfx-button1" text="SEARCH" />
+                 <JFXButton onAction="#handleDelete" prefHeight="40.0" prefWidth="170.0" styleClass="jfx-button1" text="DELETE" />
+                 <JFXButton onAction="#handleBrandDelete" prefHeight="40.0" prefWidth="170.0" styleClass="jfx-button1" text="DELETE BRAND" />
+                 <JFXButton onAction="#handleDownload" prefHeight="40.0" prefWidth="170.0" styleClass="jfx-button1" text="DOWNLOAD STOCKS" />
+                  <JFXCheckBox fx:id="editCheckBox" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" text="Edit Stock" />
+            <BorderPane.margin>
+               <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+            </BorderPane.margin>
+             </HBox>
+        </top>
+        <right>
+            <StackPane BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets bottom="10.0" left="20.0" right="20.0" />
+                </BorderPane.margin>
+                <ScrollPane maxHeight="400.0" minHeight="400.0" prefHeight="400.0">
+                    <VBox fx:id="editPane" alignment="CENTER" spacing="20.0">
+                        <Label text="Edit Stock">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <JFXTextField fx:id="c" promptText="Category" />
+                        <JFXTextField fx:id="s" promptText="Sub-Category" />
+                        <JFXTextField fx:id="n" promptText="Name" />
+                        <JFXTextField fx:id="h" promptText="HSN" />
+                        <JFXTextField fx:id="p" promptText="PartNo" />
+                        <JFXTextField fx:id="q" promptText="QTY" />
+                        <JFXTextField fx:id="mrp" promptText="MRP" />
+                        <JFXTextField fx:id="pl" promptText="Place" />
+                        <JFXTextField fx:id="r" promptText="Remarks" />
+                        <JFXTextField fx:id="min" promptText="Minimum QTY" />
+                        <JFXButton onAction="#handleEdit" styleClass="jfx-button1" text="Submit" />
+                    </VBox>
+                </ScrollPane>
+            </StackPane>
+        </right>
+    </BorderPane>
+</StackPane>
