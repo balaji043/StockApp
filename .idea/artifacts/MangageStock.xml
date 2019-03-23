@@ -18,7 +18,7 @@
       <element id="archive" name="ManageStock.jar">
         <element id="module-output" name="StockApp" />
       </element>
-      <element id="directory" name="library">
+      <element id="directory" name="Library">
         <element id="file-copy" path="D:/Jar/controlsfx-8.0.1.jar" />
         <element id="file-copy" path="D:/Jar/gson-2.3.1.jar" />
         <element id="file-copy" path="D:/Jar/poi-4.0.1.jar" />

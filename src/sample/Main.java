@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
@@ -54,6 +55,8 @@ public class Main extends Application {
         JFXDecorator decorator = new JFXDecorator(this.primaryStage, rootLayout);
         decorator.setCustomMaximize(true);
         decorator.setMaximized(true);
+        this.primaryStage.getIcons().add(new Image(Main.class.
+                getResourceAsStream("resources/icons/w.png")));
 
         Scene scene = new Scene(decorator, 1080, 720);
         scene.getStylesheets().add(Main.class.getResource("resources/CSS/" +
