@@ -15,6 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Alert.AlertMaker;
 import sample.Database.DatabaseHelper;
+import sample.Database.DatabaseHelper_Product;
+import sample.Database.ExcelHelper;
 import sample.Main;
 import sample.Utils.Preferences;
 import sample.custom.ToolTip.TooltippedTableCell;
@@ -47,8 +49,6 @@ public class ViewStocksController {
     private Product singleSelectedItem = null;
     private User user;
     private Preferences preferences = Preferences.getPreferences();
-
-
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
         init();
@@ -76,19 +76,17 @@ public class ViewStocksController {
             if (categoryCB.getValue() != null && !categoryCB.getValue().isEmpty()) {
                 subCategoryCB.getItems().clear();
                 subCategoryCB.getItems()
-                        .addAll(DatabaseHelper.getSubCategory(tableCB.getValue()
+                        .addAll(DatabaseHelper_Product.getSubCategory(tableCB.getValue()
                                 , categoryCB.getValue()));
                 tableView.getItems().clear();
-                tableView.getItems().addAll(DatabaseHelper
-                        .getCategoryProductList(tableCB.getValue()
+                tableView.getItems().addAll(DatabaseHelper_Product.getCategoryProductList(tableCB.getValue()
                                 , categoryCB.getValue()));
             }
         });
         subCategoryCB.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (subCategoryCB.getValue() != null && !subCategoryCB.getValue().isEmpty()) {
                 tableView.getItems().clear();
-                tableView.getItems().addAll(DatabaseHelper
-                        .getCSubProductList(tableCB.getValue()
+                tableView.getItems().addAll(DatabaseHelper_Product.getCSubProductList(tableCB.getValue()
                                 , categoryCB.getValue(), subCategoryCB.getValue()));
             }
         });
@@ -151,10 +149,9 @@ public class ViewStocksController {
         } else {
             if (tableCB.getValue().equals("ALL"))
                 for (String s1 : preferences.getTableNames())
-                    tableView.getItems().addAll(DatabaseHelper.getProductList(
-                            s1, "%" + s + "%"));
+                    tableView.getItems().addAll(DatabaseHelper_Product.getProductList(s1, "%" + s + "%"));
             else
-                tableView.getItems().addAll(DatabaseHelper.getProductList(
+                tableView.getItems().addAll(DatabaseHelper_Product.getProductList(
                         tableCB.getValue(), "%" + s + "%"));
         }
 
@@ -209,7 +206,7 @@ public class ViewStocksController {
                 if (okay) {
                     boolean ok = true;
                     for (Product pr : deleteList) {
-                        ok = ok && DatabaseHelper.deleteProduct(pr, tableCB.getValue());
+                        ok = ok && DatabaseHelper_Product.deleteProduct(pr, tableCB.getValue());
                     }
                     if (ok) {
                         mainApp.snackBar("Deleted"
@@ -272,11 +269,11 @@ public class ViewStocksController {
         File dest = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
         if (dest == null) {
             mainApp.snackBar(""
-                    , singleSelectedItem.getName() + " Download Cancelled"
+                    , " Download Cancelled"
                     , "red");
         } else {
             mainApp.addSpinner();
-            boolean ok = DatabaseHelper.productSQLToExcel(dest);
+            boolean ok = ExcelHelper.productSQLToExcel(dest);
             mainApp.removeSpinner();
             if (ok)
                 mainApp.snackBar("Success"
@@ -296,7 +293,7 @@ public class ViewStocksController {
         if (singleSelectedItem != null) {
             if (!singleSelectedItem.getCategory().equals(c.getText())) {
 
-                if (DatabaseHelper.changeCategoryOrSubC(singleSelectedItem.getCategory()
+                if (DatabaseHelper_Product.changeCategoryOrSubC(singleSelectedItem.getCategory()
                         , c.getText(), tableCB.getValue(), true)) {
                     mainApp.snackBar("Success"
                             , singleSelectedItem.getCategory() + " Category changed to " + c.getText()
@@ -309,7 +306,7 @@ public class ViewStocksController {
                 }
             }
             if (!singleSelectedItem.getSubCategory().equals(s.getText())) {
-                if (DatabaseHelper.changeCategoryOrSubC(singleSelectedItem.getSubCategory()
+                if (DatabaseHelper_Product.changeCategoryOrSubC(singleSelectedItem.getSubCategory()
                         , s.getText(), tableCB.getValue(), false)) {
                     mainApp.snackBar("Success"
                             , singleSelectedItem.getSubCategory()
@@ -323,7 +320,7 @@ public class ViewStocksController {
                 }
             }
             if (!singleSelectedItem.getName().equals(n.getText())) {
-                if (DatabaseHelper.changeName(singleSelectedItem.getName()
+                if (DatabaseHelper_Product.changeName(singleSelectedItem.getName()
                         , n.getText()
                         , singleSelectedItem.getCategory()
                         , singleSelectedItem.getSubCategory()
@@ -350,7 +347,7 @@ public class ViewStocksController {
             singleSelectedItem.setHsnCode(h.getText());
             singleSelectedItem.setRemarks(r.getText());
 
-            if (DatabaseHelper.updateProduct(singleSelectedItem, tableCB.getValue())) {
+            if (DatabaseHelper_Product.updateProduct(singleSelectedItem, tableCB.getValue())) {
                 mainApp.snackBar("Success"
                         , singleSelectedItem.getName() + " stock is updated"
                         , "green");
@@ -371,14 +368,14 @@ public class ViewStocksController {
         tableView.getItems().clear();
         if (!tableCB.getValue().equals("ALL")) {
             categoryCB.getItems().clear();
-            categoryCB.getItems().addAll(DatabaseHelper.getCategories(tableCB.getValue()));
-            tableView.getItems().addAll(DatabaseHelper.getProductList(tableCB.getValue()));
+            categoryCB.getItems().addAll(DatabaseHelper_Product.getCategories(tableCB.getValue()));
+            tableView.getItems().addAll(DatabaseHelper_Product.getProductList(tableCB.getValue()));
         } else {
             categoryCB.getItems().clear();
             subCategoryCB.getItems().clear();
             tableView.getItems().clear();
             for (String s : preferences.getTableNames()) {
-                tableView.getItems().addAll(DatabaseHelper.getProductList(s));
+                tableView.getItems().addAll(DatabaseHelper_Product.getProductList(s));
             }
         }
     }

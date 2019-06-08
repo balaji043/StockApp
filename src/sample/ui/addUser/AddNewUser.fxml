@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.*?>
-<StackPane fx:id="root" prefHeight="720.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ui.addUser.AddNewUserController">
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane fx:id="root" prefHeight="720.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ui.addUser.AddNewUserController">
     <BorderPane fx:id="borderPane">
         <right>
             <VBox alignment="CENTER" spacing="50.0">
                 <BorderPane.margin>
-                    <Insets bottom="80.0" left="10.0" right="10.0" top="80.0"/>
+                    <Insets bottom="80.0" left="10.0" right="10.0" top="80.0" />
                 </BorderPane.margin>
                 <VBox spacing="40.0">
-                    <JFXTextField fx:id="name" promptText="Name"/>
-                    <JFXTextField fx:id="username" promptText="User name"/>
-                    <JFXComboBox fx:id="accessComboBox" labelFloat="true"/>
-                    <JFXPasswordField fx:id="passwordField" promptText="Password"/>
+                    <JFXTextField fx:id="name" promptText="Name" />
+                    <JFXTextField fx:id="username" promptText="User name" />
+                    <JFXComboBox fx:id="accessComboBox" labelFloat="true" promptText="access" />
+                    <JFXPasswordField fx:id="passwordField" promptText="Password" />
                 </VBox>
                 <VBox spacing="20.0">
-                    <JFXButton styleClass="jfx-button1" onAction="#handleAddNow" prefHeight="40.0" prefWidth="185.0" text="submit"
-                               />
-                    <JFXButton styleClass="jfx-button1" onAction="#handleBack" prefHeight="40.0" prefWidth="185.0" text="Delete User"
-                               />
+                    <JFXButton onAction="#handleAddNow" prefHeight="40.0" prefWidth="185.0" styleClass="jfx-button1" text="submit" />
+                    <JFXButton onAction="#handleBack" prefHeight="40.0" prefWidth="185.0" styleClass="jfx-button1" text="Delete User" />
                 </VBox>
                 <VBox spacing="10.0">
-                    <JFXPasswordField fx:id="passwordField1" promptText="Special Password"/>
-                    <JFXButton styleClass="jfx-button1" onAction="#handleSpecial"
-                               prefHeight="40.0" prefWidth="185.0" text="submit"/>
+                    <JFXPasswordField fx:id="passwordField1" promptText="Special Password" />
+                    <JFXButton onAction="#handleSpecial" prefHeight="40.0" prefWidth="185.0" styleClass="jfx-button1" text="submit" />
                 </VBox>
             </VBox>
         </right>
         <center>
-            <TableView fx:id="userTableView" prefHeight="200.0" prefWidth="200.0"
-                       BorderPane.alignment="CENTER">
+            <TableView fx:id="userTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                 <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
             </TableView>
         </center>

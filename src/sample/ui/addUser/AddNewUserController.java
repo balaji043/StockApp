@@ -12,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import sample.Alert.AlertMaker;
-import sample.Database.DatabaseHelper;
+import sample.Database.DatabaseHelper_User;
 import sample.Main;
 import sample.Utils.Preferences;
 import sample.model.User;
@@ -73,7 +73,7 @@ public class AddNewUserController {
 
     private void loadTable() {
         userTableView.getItems().clear();
-        userTableView.getItems().addAll(DatabaseHelper.getUserList());
+        userTableView.getItems().addAll(DatabaseHelper_User.getUserList());
     }
 
     @FXML
@@ -99,11 +99,11 @@ public class AddNewUserController {
 
                 user = new User("" + name.getText()
                         , "" + username.getText()
-                        , "emp" + (DatabaseHelper.getUserList().size())
+                        , "emp" + (DatabaseHelper_User.getUserList().size())
                         , "" + passwordField.getText()
                         , "" + accessComboBox.getValue());
 
-                if (DatabaseHelper.insertNewUser(user)) {
+                if (DatabaseHelper_User.insertNewUser(user)) {
                     mainApp.snackBar("Success", "User Added Successfully", "green");
                     clearAll();
                 } else {
@@ -134,7 +134,7 @@ public class AddNewUserController {
                         , emp
                         , "" + passwordField.getText()
                         , "" + accessComboBox.getValue());
-                if (DatabaseHelper.updateUser(user)) {
+                if (DatabaseHelper_User.updateUser(user)) {
                     clearAll();
                     mainApp.snackBar("Success", "User Data Updated Successfully", "green");
                 } else {
@@ -172,7 +172,7 @@ public class AddNewUserController {
                     , mainApp);
 
             if (okay) {
-                boolean ok = DatabaseHelper.deleteUser(users);
+                boolean ok = DatabaseHelper_User.deleteUser(users);
                 if (ok) {
                     mainApp.snackBar("Success"
                             , "Selected User's data is deleted"

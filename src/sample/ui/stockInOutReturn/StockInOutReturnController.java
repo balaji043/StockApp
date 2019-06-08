@@ -88,11 +88,10 @@ public class StockInOutReturnController {
         } else {
             DatabaseHelper.createProductTable(table.getValue());
             try {
-                Control1SingleStock control1SingleStock = new Control1SingleStock(action,
-                        table.getValue(), mainApp);
+                Control1SingleStock control1SingleStock = new Control1SingleStock(action, table.getValue(), mainApp);
                 listView.getItems().add(control1SingleStock);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
 

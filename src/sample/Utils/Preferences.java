@@ -27,13 +27,14 @@ public class Preferences {
         Writer writer = null;
         try {
             File file = new File(FILE_PATH);
-            file.createNewFile();
+            boolean b = file.createNewFile();
+            if (b) System.out.println("File Created");
+            else System.out.println("File not Created");
             Preferences preferences = new Preferences();
             writer = new FileWriter(FILE_PATH);
             Gson gson = new Gson();
             gson.toJson(preferences, writer);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
         } finally {
             try {

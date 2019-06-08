@@ -11,7 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.textfield.TextFields;
 import sample.Alert.AlertMaker;
-import sample.Database.DatabaseHelper;
+import sample.Database.DatabaseHelper_Log;
+import sample.Database.DatabaseHelper_Product;
 import sample.Main;
 import sample.model.Log;
 import sample.model.Product;
@@ -54,12 +55,6 @@ public class Control1SingleStock extends HBox {
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
-            if (!action.equals("in")) {
-                category.setEditable(false);
-                subCategory.setEditable(false);
-                name.setEditable(false);
-                hBox.getChildren().removeAll(partno, hsn, place, min,mrp);
-            }
 
             category.getValidators().add(validator);
             subCategory.getValidators().add(validator);
@@ -70,7 +65,7 @@ public class Control1SingleStock extends HBox {
             min.getValidators().add(validator2);
             remarks.getValidators().add(validator);
 
-            category.getItems().addAll(DatabaseHelper.getCategories(tableName));
+            category.getItems().addAll(DatabaseHelper_Product.getCategories(tableName));
 
             category.focusedProperty().addListener((o, oldVal, newVal) -> {
                 if (!newVal) {
@@ -106,6 +101,16 @@ public class Control1SingleStock extends HBox {
                 }
             });
 
+            if (action.equals("out")) {
+                category.setEditable(false);
+                subCategory.setEditable(false);
+                name.setEditable(false);
+                hBox.getChildren().removeAll(partno, hsn, place, min);
+                mrp.setEditable(false);
+                mrp.setDisable(true);
+                mrp.getValidators().clear();
+            }
+
             if (action.equals("return")) remarks.validate();
 
             category.validate();
@@ -121,32 +126,35 @@ public class Control1SingleStock extends HBox {
                 subCategory.getItems().clear();
                 name.getItems().clear();
                 if (category.getValue() != null) {
-                    subCategory.getItems().addAll(DatabaseHelper.getSubCategory(tableName
+                    subCategory.getItems().addAll(DatabaseHelper_Product.getSubCategory(tableName
                             , category.getValue()));
                 }
             });
             subCategory.valueProperty().addListener((observable, oldValue, newValue) -> {
                 name.getItems().clear();
                 if (subCategory.getValue() != null) {
-                    name.getItems().addAll(DatabaseHelper.getProductName(
+                    name.getItems().addAll(DatabaseHelper_Product.getProductName(
                             tableName, category.getValue(), subCategory.getValue()));
                 }
             });
             name.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (category.getValue() != null && subCategory.getValue() != null
                         && name.getValue() != null) {
-                    isProductExist = DatabaseHelper.isProductExistS(new Product(category.getValue(),
+                    isProductExist = DatabaseHelper_Product.isProductExistS(new Product(category.getValue(),
                             subCategory.getValue(), name.getValue()), tableName);
                     if (isProductExist) {
-                        product1 = DatabaseHelper.getProductInfo(new Product(category.getValue(),
+                        product1 = DatabaseHelper_Product.getProductInfo(new Product(category.getValue(),
                                 subCategory.getValue(), name.getValue()), tableName);
-                        mrp.setPromptText("Mrp: " + product1.getMRP());
                         qty.setPromptText("Qty: " + product1.getQTY());
                         hsn.setPromptText("Hsn: " + product1.getHsnCode());
                         partno.setPromptText("Pno: " + product1.getPartNo());
                         place.setPromptText("Plc: " + product1.getPlace());
                         remarks.setPromptText("Rem: " + product1.getRemarks());
                         min.setPromptText("Min: " + product1.getMin());
+                        if (action.equals("out"))
+                            mrp.setText(product1.getMRP());
+                        else
+                            mrp.setPromptText("Mrp: " + product1.getMRP());
                     }
                 }
             });
@@ -166,7 +174,7 @@ public class Control1SingleStock extends HBox {
             brandLabel.setText(tableName);
 
         } catch (IOException exception) {
-            throw new RuntimeException(exception);
+            exception.printStackTrace();
         }
     }
 
@@ -202,7 +210,7 @@ public class Control1SingleStock extends HBox {
         boolean submitted;
         try {
             if (isProductExist) {
-                product1 = DatabaseHelper.getProductInfo(getP(), tableName);
+                product1 = DatabaseHelper_Product.getProductInfo(getP(), tableName);
                 if (partno.getText() != null && !partno.getText().isEmpty()) {
                     product1.setPartNo(partno.getText());
                 }
@@ -248,10 +256,10 @@ public class Control1SingleStock extends HBox {
                             , main.getUser().getUserName()
                             , action, product1.getRemarks());
 
-                    submitted = DatabaseHelper.updateProduct(product1, tableName) &&
-                            DatabaseHelper.insertNewLog(log);
+                    submitted = DatabaseHelper_Product.updateProduct(product1, tableName) &&
+                            DatabaseHelper_Log.insertNewLog(log);
                 } else {
-                    submitted = DatabaseHelper.updateProduct(product1, tableName);
+                    submitted = DatabaseHelper_Product.updateProduct(product1, tableName);
                 }
                 vBox.setStyle("-fx-background-color:#ccffcc");
                 if (submitted) {
@@ -315,8 +323,8 @@ public class Control1SingleStock extends HBox {
                             , main.getUser().getUserName()
                             , action, p.getRemarks());
 
-                    submitted = DatabaseHelper.insertNewProduct(p, tableName)
-                            && DatabaseHelper.insertNewLog(log);
+                    submitted = DatabaseHelper_Product.insertNewProduct(p, tableName)
+                            && DatabaseHelper_Log.insertNewLog(log);
                     vBox.setStyle("-fx-background-color:#ccffcc");
                     if (submitted) {
                         main.snackBar("Success", p.getName() +
@@ -341,7 +349,7 @@ public class Control1SingleStock extends HBox {
         boolean submitted;
 
         try {
-            product1 = DatabaseHelper.getProductInfo(getP(), tableName);
+            product1 = DatabaseHelper_Product.getProductInfo(getP(), tableName);
             if (qty.getText() != null && !qty.getText().isEmpty()) {
                 try {
                     entry = "" + product1.getQTY();
@@ -374,8 +382,8 @@ public class Control1SingleStock extends HBox {
                     , product1.getSubCategory(), product1.getName(), entry, received, issued
                     , balance, main.getUser().getUserName(), action, product1.getRemarks());
 
-            submitted = DatabaseHelper.updateProduct(product1, tableName) &&
-                    DatabaseHelper.insertNewLog(log);
+            submitted = DatabaseHelper_Product.updateProduct(product1, tableName) &&
+                    DatabaseHelper_Log.insertNewLog(log);
 
             if (submitted) {
                 main.snackBar("Success", product1.getName() +
@@ -398,7 +406,7 @@ public class Control1SingleStock extends HBox {
         int a, b, q;
         boolean submitted;
         try {
-            product1 = DatabaseHelper.getProductInfo(getP(), tableName);
+            product1 = DatabaseHelper_Product.getProductInfo(getP(), tableName);
             if (qty.getText() != null && !qty.getText().isEmpty()) {
                 try {
                     entry = "" + product1.getQTY();
@@ -429,8 +437,8 @@ public class Control1SingleStock extends HBox {
                     , product1.getSubCategory(), product1.getName(), entry, received
                     , issued, balance, main.getUser().getUserName(), action, product1.getRemarks());
 
-            submitted = DatabaseHelper.updateProduct(product1, tableName) &&
-                    DatabaseHelper.insertNewLog(log);
+            submitted = DatabaseHelper_Product.updateProduct(product1, tableName) &&
+                    DatabaseHelper_Log.insertNewLog(log);
             if (submitted) {
                 main.snackBar("Success", product1.getName() +
                         " stock item is returned !", "green");

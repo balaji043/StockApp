@@ -5,7 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
-import sample.Database.DatabaseHelper;
+import sample.Database.DatabaseHelper_User;
 import sample.Main;
 
 
@@ -25,9 +25,9 @@ public class LoginController {
             mainApp.addSpinner();
             String user = textFieldUserName.getText(), password = textFieldPassword.getText();
             if (!user.isEmpty() && !password.isEmpty()) {
-                if (DatabaseHelper.valid(user, password)) {
+                if (DatabaseHelper_User.valid(user, password)) {
                     mainApp.snackBar("","Welcome "+user, "green");
-                    mainApp.setUser(DatabaseHelper.getUserInfo(user));
+                    mainApp.setUser(DatabaseHelper_User.getUserInfo(user));
                     mainApp.initMenuLayout();
                 } else {
                     mainApp.snackBar("","Wrong!\nTry Again!", "red");

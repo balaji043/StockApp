@@ -1,9 +1,6 @@
 package sample.ui.history;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,8 +12,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import org.controlsfx.control.textfield.TextFields;
 import sample.Alert.AlertMaker;
-import sample.Database.DatabaseHelper;
+import sample.Database.DatabaseHelper_Log;
+import sample.Database.ExcelHelper;
 import sample.Main;
 import sample.Utils.Preferences;
 import sample.model.Log;
@@ -28,6 +27,7 @@ import java.time.LocalDate;
 Stock History
 */
 public class HistoryController {
+    public JFXTextField searchBox;
     private Main mainApp;
     @FXML
     JFXComboBox<String> table, categoryCB, subCategoryCB, NameCB;
@@ -41,7 +41,7 @@ public class HistoryController {
     public TableView<Log> tableView;
 
     @FXML
-    public JFXButton addI;
+    public JFXButton addI, searchI;
 
     private ObservableList<Log> logs = FXCollections.observableArrayList();
 
@@ -52,9 +52,14 @@ public class HistoryController {
         inCB.setSelected(true);
         outCB.setSelected(true);
         returnCB.setSelected(true);
+        TextFields.bindAutoCompletion(searchBox, DatabaseHelper_Log.getNames());
         double i = 35;
         addI.setGraphic(new ImageView(new Image(Main.class.
-                getResourceAsStream("resources/icons/refreshicon.png")
+                getResourceAsStream("resources/icons/refreshIcon.png")
+                , i, i, true, true)));
+        i = 30;
+        searchI.setGraphic(new ImageView(new Image(Main.class.
+                getResourceAsStream("resources/icons/search.png")
                 , i, i, true, true)));
         toDate.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
@@ -77,7 +82,7 @@ public class HistoryController {
             NameCB.setPromptText("Name");
 
             if (table.getSelectionModel().getSelectedItem() != null)
-                categoryCB.getItems().addAll(DatabaseHelper.getCategories(table.getValue()));
+                categoryCB.getItems().addAll(DatabaseHelper_Log.getCategoriesFromLog(table.getValue()));
         });
         categoryCB.valueProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -87,8 +92,7 @@ public class HistoryController {
             NameCB.setPromptText("Name");
 
             if (categoryCB.getSelectionModel().getSelectedItem() != null)
-                subCategoryCB.getItems().addAll(DatabaseHelper.getSubCategory(table.getValue(),
-                        categoryCB.getValue()));
+                subCategoryCB.getItems().addAll(DatabaseHelper_Log.getSubCategoryFromLog(table.getValue(), categoryCB.getValue()));
         });
         subCategoryCB.valueProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -96,8 +100,7 @@ public class HistoryController {
             NameCB.setPromptText("Name");
 
             if (subCategoryCB.getSelectionModel().getSelectedItem() != null)
-                NameCB.getItems().addAll(DatabaseHelper.getProductName(table.getValue(),
-                        categoryCB.getValue(), subCategoryCB.getValue()));
+                NameCB.getItems().addAll(DatabaseHelper_Log.getProductNameFromLog(table.getValue(), categoryCB.getValue(), subCategoryCB.getValue()));
         });
     }
 
@@ -145,7 +148,7 @@ public class HistoryController {
         addTableColumn("Remarks", "Remarks");
 
         tableView.setTableMenuButtonVisible(true);
-        logs = DatabaseHelper.getAllLogList();
+        logs = DatabaseHelper_Log.getAllLogList();
         tableView.getItems().addAll(logs);
     }
 
@@ -168,63 +171,64 @@ public class HistoryController {
 
     private void loadTables() {
         //table
-        if (!table.getSelectionModel().isEmpty()) {
-            if (!categoryCB.getSelectionModel().isEmpty()) {
-                if (!subCategoryCB.getSelectionModel().isEmpty()) {
-                    if (!NameCB.getSelectionModel().isEmpty()) {
-                        if (fromDate.getValue() != null
-                                || toDate.getValue() != null) {
-                            logs = DatabaseHelper.getLogListNameWithDate(
-                                    categoryCB.getValue()
-                                    , subCategoryCB.getValue()
-                                    , NameCB.getValue()
-                                    , fromDate.getValue()
-                                    , toDate.getValue());
-                        } else {
-                            logs = DatabaseHelper.getLogListName(table.getValue()
-                                    , categoryCB.getValue()
-                                    , subCategoryCB.getValue()
-                                    , NameCB.getValue());
-                        }
-                    } else {
-                        if (fromDate.getValue() != null
-                                || toDate.getValue() != null) {
-                            logs = DatabaseHelper.getLogListSubCategoryWithDate(table.getValue()
-                                    , categoryCB.getValue()
-                                    , subCategoryCB.getValue()
-                                    , fromDate.getValue()
-                                    , toDate.getValue());
-                        } else {
-                            logs = DatabaseHelper.getLogListSubCategory(table.getValue()
-                                    , categoryCB.getValue(), subCategoryCB.getValue());
-
-                        }
-                    }
-                } else {
-                    if (fromDate.getValue() != null
-                            || toDate.getValue() != null) {
-                        logs = DatabaseHelper.getLogListCategoryWithDate(table.getValue()
-                                , categoryCB.getValue(), fromDate.getValue(), toDate.getValue());
-                    } else {
-                        logs = DatabaseHelper.getLogListCategory(table.getValue()
-                                , categoryCB.getValue());
-                    }
-                }
-            } else {
-                if (fromDate.getValue() != null
-                        || toDate.getValue() != null) {
-                    logs = DatabaseHelper.getLogListBrandWithDate(table.getValue()
-                            , fromDate.getValue(), toDate.getValue());
-                } else {
-                    logs = DatabaseHelper.getLogListBrand(table.getValue());
-                }
-            }
+        if (searchBox.getText() != null && !searchBox.getText().equals("")) {
+            logs = DatabaseHelper_Log.getLogLisWithSearchText(searchBox.getText());
         } else {
-            if ((fromDate.getValue() != null
-                    || toDate.getValue() != null)) {
-                logs = DatabaseHelper.getLogListDateOnly(fromDate.getValue(), toDate.getValue());
+            if (!table.getSelectionModel().isEmpty()) {
+                if (!categoryCB.getSelectionModel().isEmpty()) {
+                    if (!subCategoryCB.getSelectionModel().isEmpty()) {
+                        if (!NameCB.getSelectionModel().isEmpty()) {
+                            if (fromDate.getValue() != null
+                                    || toDate.getValue() != null) {
+                                logs = DatabaseHelper_Log.getLogListNameWithDate(
+                                        categoryCB.getValue()
+                                        , subCategoryCB.getValue()
+                                        , NameCB.getValue()
+                                        , fromDate.getValue()
+                                        , toDate.getValue());
+                            } else {
+                                logs = DatabaseHelper_Log.getLogListName(table.getValue()
+                                        , categoryCB.getValue()
+                                        , subCategoryCB.getValue()
+                                        , NameCB.getValue());
+                            }
+                        } else {
+                            if (fromDate.getValue() != null
+                                    || toDate.getValue() != null) {
+                                logs = DatabaseHelper_Log.getLogListSubCategoryWithDate(table.getValue()
+                                        , categoryCB.getValue()
+                                        , subCategoryCB.getValue()
+                                        , fromDate.getValue()
+                                        , toDate.getValue());
+                            } else {
+                                logs = DatabaseHelper_Log.getLogListSubCategory(table.getValue()
+                                        , categoryCB.getValue(), subCategoryCB.getValue());
+
+                            }
+                        }
+                    } else {
+                        if (fromDate.getValue() != null || toDate.getValue() != null) {
+                            logs = DatabaseHelper_Log.getLogListCategoryWithDate(table.getValue()
+                                    , categoryCB.getValue(), fromDate.getValue(), toDate.getValue());
+                        } else {
+                            logs = DatabaseHelper_Log.getLogListCategory(table.getValue()
+                                    , categoryCB.getValue());
+                        }
+                    }
+                } else {
+                    if (fromDate.getValue() != null || toDate.getValue() != null) {
+                        logs = DatabaseHelper_Log.getLogListBrandWithDate(table.getValue()
+                                , fromDate.getValue(), toDate.getValue());
+                    } else {
+                        logs = DatabaseHelper_Log.getLogListBrand(table.getValue());
+                    }
+                }
             } else {
-                logs = DatabaseHelper.getAllLogList();
+                if ((fromDate.getValue() != null || toDate.getValue() != null)) {
+                    logs = DatabaseHelper_Log.getLogListDateOnly(fromDate.getValue(), toDate.getValue());
+                } else {
+                    logs = DatabaseHelper_Log.getAllLogList();
+                }
             }
         }
         inOutReturnFunction();
@@ -248,7 +252,7 @@ public class HistoryController {
             mainApp.snackBar("Info", "Operation Cancelled", "green");
         } else {
             mainApp.addSpinner();
-            boolean ok =DatabaseHelper.allLogsFromSqlToExcel(dest, tableView.getItems());
+            boolean ok = ExcelHelper.allLogsFromSqlToExcel(dest, tableView.getItems());
             mainApp.removeSpinner();
             if (ok)
                 mainApp.snackBar("Success", "Stock History Data Written to Excel", "green");
@@ -272,13 +276,13 @@ public class HistoryController {
                     Log log = tableView.getSelectionModel().getSelectedItem();
                     l.add(log);
                     tableView.getItems().remove(log);
-                    if (DatabaseHelper.deleteLogs(l)) {
+                    if (DatabaseHelper_Log.deleteLogs(l)) {
                         mainApp.snackBar("Success", "Selected Log is Deleted", "green");
                     } else {
                         mainApp.snackBar("Failed", "Selected Log is not Deleted", "red");
                     }
                 } else {
-                    if (DatabaseHelper.deleteLogs(logs)) {
+                    if (DatabaseHelper_Log.deleteLogs(logs)) {
                         mainApp.snackBar("Success", "Selected Log is Deleted", "green");
                         tableView.getItems().clear();
                         loadTables();

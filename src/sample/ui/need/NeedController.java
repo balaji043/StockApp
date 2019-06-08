@@ -9,7 +9,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import sample.Alert.AlertMaker;
-import sample.Database.DatabaseHelper;
+import sample.Database.DatabaseHelper_Product;
+import sample.Database.ExcelHelper;
 import sample.Main;
 import sample.Utils.Preferences;
 import sample.custom.ToolTip.TooltippedTableCell;
@@ -77,11 +78,11 @@ public class NeedController implements Initializable {
             mainApp.addSpinner();
 
             if (tableCB.getValue().equals("All")) {
-                okay = DatabaseHelper.needProductSQLToExcel(dest, preferences.getTableNames());
+                okay = ExcelHelper.needProductSQLToExcel(dest, preferences.getTableNames());
             } else {
                 Set<String> s = new HashSet<>();
                 s.add(tableCB.getValue());
-                okay = DatabaseHelper.needProductSQLToExcel(dest, s);
+                okay = ExcelHelper.needProductSQLToExcel(dest, s);
             }
             mainApp.removeSpinner();
             if (okay)
@@ -120,11 +121,10 @@ public class NeedController implements Initializable {
         if (tableCB.getValue().equals("All")) {
             Set<String> table = Preferences.getPreferences().getTableNames();
             for (String s : table) {
-                tableView.getItems().addAll(DatabaseHelper.getNeededProductList(s));
+                tableView.getItems().addAll(DatabaseHelper_Product.getNeededProductList(s));
             }
         } else {
-            tableView.getItems().addAll(DatabaseHelper
-                    .getNeededProductList(tableCB.getValue()));
+            tableView.getItems().addAll(DatabaseHelper_Product.getNeededProductList(tableCB.getValue()));
         }
     }
 

@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Alert.AlertMaker;
 import sample.Database.DatabaseHelper;
+import sample.Database.ExcelHelper;
 import sample.Utils.Preferences;
 import sample.model.User;
 import sample.ui.addUser.AddNewUserController;
@@ -64,7 +65,6 @@ public class Main extends Application {
                 .toExternalForm());
 
         primaryStage.setScene(scene);
-        DatabaseHelper.setMain(Main.this);
         rootController = loader.getController();
         rootController.setMainApp(Main.this);
         primaryStage.show();
@@ -189,7 +189,7 @@ public class Main extends Application {
                         jfxBarInf.setPrefWidth(500);
                         jfxBarInf.setProgress(-1.0f);
 
-                        if (DatabaseHelper.excelTOSQLite()) {
+                        if (ExcelHelper.excelTOSQLite()) {
                             alert.close();
 
                             snackBar("Success", "All the Stock items are updated to" +
