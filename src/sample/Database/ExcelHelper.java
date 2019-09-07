@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,7 @@ import sample.model.Product;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -24,8 +26,6 @@ import static sample.Database.DatabaseHelper_Product.getProductList;
 public class ExcelHelper {
     // get products from excel
     private static boolean okay;
-    private static FileInputStream excel = null;
-    private static XSSFWorkbook workbook = null;
     private static File dest;
 
     private static ArrayList<Product> getProducts(@NotNull Sheet sheet) {
@@ -107,6 +107,8 @@ public class ExcelHelper {
         okay = false;
         String fileName = Preferences.getPreferences()
                 .getPath();
+        FileInputStream excel;
+        Workbook workbook;
         try {
             excel = new FileInputStream(new File(fileName));
             workbook = new XSSFWorkbook(excel);
@@ -137,14 +139,27 @@ public class ExcelHelper {
     public static boolean productSQLToExcel(@NotNull File dest) {
         okay = false;
         ObservableList<Product> products;
-        ExcelHelper.dest = dest;
-        Set<String> tableNames = Preferences.getPreferences().getTableNames();
+        Set<String> tableNames =
+                Preferences.getPreferences().getTableNames();
+        FileInputStream excel = null;
+        XSSFWorkbook workbook = null;
         try {
             String FILE_NAME = dest.getAbsolutePath();
             XSSFSheet sheet;
-            getExcelAndWorkbook();
+
+            try {
+                excel = new FileInputStream(dest);
+                workbook = new XSSFWorkbook(excel);
+            } catch (Exception e) {
+                workbook = new XSSFWorkbook();
+            }
+
             for (String s : tableNames) {
-                sheet = getSheet(s);
+                try {
+                    sheet = workbook.createSheet(s);
+                } catch (Exception e) {
+                    sheet = workbook.getSheet(s);
+                }
                 products = getProductList(s);
                 int rowNum = 0;
                 Row row;
@@ -183,23 +198,49 @@ public class ExcelHelper {
         } catch (Exception e) {
             AlertMaker.showErrorMessage(e);
             e.printStackTrace();
+        } finally {
+            if (excel != null) {
+                try {
+                    excel.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            try {
+                assert workbook != null;
+                workbook.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return okay;
     }
 
     public static boolean needProductSQLToExcel(@NotNull File dest, @NotNull Set<String> tableNames) {
         okay = false;
-        ExcelHelper.dest = dest;
+        FileInputStream excel = null;
+        XSSFWorkbook workbook = null;
+
         ObservableList<Product> products;
         try {
             String FILE_NAME = dest.getAbsolutePath();
-            getExcelAndWorkbook();
             XSSFSheet sheet;
+
+            try {
+                excel = new FileInputStream(dest);
+                workbook = new XSSFWorkbook(excel);
+            } catch (Exception e) {
+                workbook = new XSSFWorkbook();
+            }
 
             for (String s : tableNames) {
                 products = getNeededProductList(s);
                 if (products.size() == 0) continue;
-                sheet = getSheet(s);
+                try {
+                    sheet = workbook.createSheet(s);
+                } catch (Exception e) {
+                    sheet = workbook.getSheet(s);
+                }
                 int rowNum = 0;
                 Row row;
                 row = sheet.createRow(rowNum);
@@ -226,6 +267,19 @@ public class ExcelHelper {
         } catch (Exception e) {
             AlertMaker.showErrorMessage(e);
             e.printStackTrace();
+        } finally {
+            assert excel != null;
+            try {
+                excel.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            assert workbook != null;
+            try {
+                workbook.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return okay;
     }
@@ -234,8 +288,16 @@ public class ExcelHelper {
         okay = false;
         try {
             String FILE_NAME = dest.getAbsolutePath();
+            FileInputStream excel;
+            XSSFWorkbook workbook;
             XSSFSheet sheet;
-            getExcelAndWorkbook();
+
+            try {
+                excel = new FileInputStream(dest);
+                workbook = new XSSFWorkbook(excel);
+            } catch (Exception e) {
+                workbook = new XSSFWorkbook();
+            }
             try {
                 sheet = workbook.createSheet("History");
             } catch (Exception e) {
@@ -272,28 +334,8 @@ public class ExcelHelper {
             okay = true;
         } catch (Exception e) {
             AlertMaker.showErrorMessage(e);
-            e.printStackTrace();
         }
         return okay;
-    }
-
-    private static XSSFSheet getSheet(String s) {
-        XSSFSheet sheet;
-        try {
-            sheet = workbook.createSheet(s);
-        } catch (Exception e) {
-            sheet = workbook.getSheet(s);
-        }
-        return sheet;
-    }
-
-    private static void getExcelAndWorkbook() {
-        try {
-            excel = new FileInputStream(dest);
-            workbook = new XSSFWorkbook(excel);
-        } catch (Exception e) {
-            workbook = new XSSFWorkbook();
-        }
     }
 
 }

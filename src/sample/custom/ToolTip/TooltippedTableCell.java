@@ -1,4 +1,4 @@
-package sample.custom.ToolTip;
+package sample.custom.tooltip;
 
 
 import javafx.beans.property.ObjectProperty;

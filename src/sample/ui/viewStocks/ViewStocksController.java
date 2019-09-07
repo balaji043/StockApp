@@ -19,7 +19,7 @@ import sample.Database.DatabaseHelper_Product;
 import sample.Database.ExcelHelper;
 import sample.Main;
 import sample.Utils.Preferences;
-import sample.custom.ToolTip.TooltippedTableCell;
+import sample.custom.tooltip.TooltippedTableCell;
 import sample.model.Product;
 import sample.model.User;
 
