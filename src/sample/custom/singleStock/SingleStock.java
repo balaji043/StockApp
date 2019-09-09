@@ -1,4 +1,4 @@
-package sample.custom.singleStock;
+package sample.custom.singlestock;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -20,7 +20,7 @@ import sample.model.Product;
 import java.io.IOException;
 import java.util.Date;
 
-public class Control1SingleStock extends HBox {
+public class SingleStock extends HBox {
 
     @FXML
     private JFXComboBox<String> category, subCategory, name;
@@ -40,7 +40,7 @@ public class Control1SingleStock extends HBox {
 
     private RequiredFieldValidator validator = new RequiredFieldValidator();
 
-    public Control1SingleStock(String action, String tableName, Main main) {
+    public SingleStock(String action, String tableName, Main main) {
         this.tableName = tableName;
         this.action = action;
         this.main = main;
@@ -50,7 +50,7 @@ public class Control1SingleStock extends HBox {
         IntegerValidator validator2 = new IntegerValidator("* Num Req");
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource
-                ("custom/singleStock/singleStock.fxml"));
+                ("custom/singlestock/singleStock.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {

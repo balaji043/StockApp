@@ -60,7 +60,7 @@ public class Main extends Application {
                 getResourceAsStream("resources/icons/w.png")));
 
         Scene scene = new Scene(decorator, 1080, 720);
-        scene.getStylesheets().add(Main.class.getResource("resources/CSS/" +
+        scene.getStylesheets().add(Main.class.getResource("resources/css/" +
                 Preferences.getPreferences().getTheme() + "Theme.css")
                 .toExternalForm());
 

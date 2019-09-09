@@ -11,7 +11,7 @@ import sample.Alert.AlertMaker;
 import sample.Database.DatabaseHelper;
 import sample.Main;
 import sample.Utils.Preferences;
-import sample.custom.singleStock.Control1SingleStock;
+import sample.custom.singlestock.SingleStock;
 
 /*
  * Stock In
@@ -20,7 +20,7 @@ import sample.custom.singleStock.Control1SingleStock;
 
 public class StockInOutReturnController {
 
-    public JFXListView<Control1SingleStock> listView;
+    public JFXListView<SingleStock> listView;
 
     private Main mainApp;
     private String action;
@@ -88,8 +88,8 @@ public class StockInOutReturnController {
         } else {
             DatabaseHelper.createProductTable(table.getValue());
             try {
-                Control1SingleStock control1SingleStock = new Control1SingleStock(action, table.getValue(), mainApp);
-                listView.getItems().add(control1SingleStock);
+                SingleStock singleStock = new SingleStock(action, table.getValue(), mainApp);
+                listView.getItems().add(singleStock);
             } catch (Exception e) {
                 e.printStackTrace();
             }
